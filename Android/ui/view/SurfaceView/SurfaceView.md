@@ -78,6 +78,38 @@ public void setFormat(int format) {
 
 这个方法会修改mRequestedFormat的值，并调用updateSurface。
 
+可以通过SurfaceHolder获取Canvas：
+
+```java
+Canvas lockCanvas();
+Canvas lockCanvas(Rect dirty);
+Canvas lockHardwareCanvas();
+```
+
+这两个方法都可以获取一个canvas。
+
+两个lockCanvas获取的都是基于Skia库实现的Canvas，是CPU基于执行软件指令绘制的。
+
+lockHardwareCanvas获取的是有硬件加速的Canvas，是用GPU绘制的。
+
+用Canvas完成绘制后，需要将其返还：
+
+```java
+void unlockCanvasAndPost(Canvas canvas);
+```
+
+最佳写法：
+
+```java
+final Canvas canvas = surfaceHolder.lockXXCanvas();
+try {
+    /* 具体绘制过程 */
+} finally {
+    surfaceHolder.unlockAndPost(canvas);
+}
+```
+
+
 ### SurfaceHolder.Callback
 
 这是SurfaceView提供的一个接口：
