@@ -77,4 +77,35 @@ public void setFormat(int format) {
 ```
 
 这个方法会修改mRequestedFormat的值，并调用updateSurface。
+
 ### SurfaceHolder.Callback
+
+这是SurfaceView提供的一个接口：
+
+```java
+public interface Callback {
+    void surfaceCreated(SurfaceHolder holder);
+    void surfaceChanged(SurfaceHolder holder, int format, int width, int height);
+    void surfaceDestroyed(SurfaceHolder holder);
+}
+```
+
+后面还出了个Callback2加了个surfaceRedrawNeeded：
+
+```java
+public interface Callback2 extends Callback {
+    void surfaceRedrawNeeded(SurfaceHolder holder)
+}
+```
+
+这些接口的名字已经告诉了你它们各自的用途是什么。它们都是在updateSurface方法里伺机调用的。
+
+surfaceCreated表示新的Surface已经创建完毕，此时可以分配一些资源，如开启绘制线程。
+
+surfaceChanged表示Surface配置发生变化，此时要重新调整可能收宽高、颜色格式影响的参数。
+
+surfaceRedrawNeeded表示SurfaceView里的内容需要重新绘制，这个通常是伴随surfaceChanged调用。所以重新绘制的事情放在这里面做就行了，不要在surfaceChanged里面做绘制工作。
+
+surfaceDestroyed表示之前的Surface已经销毁了，这时候要做一些资源释放等收尾工作。在新的Surface准备好之前，都不要再使用已经销毁的Surface。
+
+显然surfaceChanged和surfaceRedrawNeeded是在surfaceCreated和surfaceDestroyed之间调用的。
