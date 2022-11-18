@@ -61,3 +61,4 @@ View的左上角相对于父View布局空间左上角的偏移量（不考虑tra
 View在父View中的实际绘制位置的坐标：
 
 left - parent.scrollX + translationx, top - parent.scrollY + translationY
+
